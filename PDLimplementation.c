@@ -4,6 +4,9 @@ address getAddress();
 date getDate();
 pdl getPdl();
 
+void menu(){
+	printf("Hello Notpad++");
+}
 void displayRecord(pdl r);//displays singular record;
 void displayAll();//displays all records
 void searchRecord();//searches record based off facility code
