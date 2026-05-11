@@ -41,6 +41,7 @@ address getAddress();
 date getDate();
 pdl getPdl();
 
+void menu(); //main menu
 void displayRecord(pdl r);//displays singular record;
 void displayAll();//displays all records
 void searchRecord();//searches record based off facility code
