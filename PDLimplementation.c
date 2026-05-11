@@ -5,7 +5,9 @@ date getDate();
 pdl getPdl();
 
 void menu(){
+	printf("Hello there stewie!\n)");
 	printf("Hello there peter!");
+    printf("Hello there louise!");
 	printf("Hello Notpad++");
 }
 
