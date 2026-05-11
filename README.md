@@ -1,2 +1,7 @@
 # PROG 2 FINALS
-prog 2 finals
+Programming 2 Final Project
+Members:
+Isaiah Franco Dela Ostia
+Samuel Matthew Llanos
+Kharlyvan Tunacao
+Frenz Galanido
