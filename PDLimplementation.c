@@ -5,9 +5,10 @@ date getDate();
 pdl getPdl();
 
 void menu(){
+	printf("Hello there peter!");
 	printf("Hello Notpad++");
-    printf("Hello there louise!");
 }
+
 void displayRecord(pdl r);//displays singular record;
 void displayAll();//displays all records
 void searchRecord();//searches record based off facility code
