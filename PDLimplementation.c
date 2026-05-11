@@ -6,6 +6,7 @@ pdl getPdl();
 
 void menu(){
 	printf("Hello Notpad++");
+    printf("Hello there louise!");
 }
 void displayRecord(pdl r);//displays singular record;
 void displayAll();//displays all records
