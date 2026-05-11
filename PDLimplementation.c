@@ -1,6 +1,5 @@
 #include "PDL.h"
 
-name getName();
 address getAddress();
 date getDate();
 pdl getPdl();
