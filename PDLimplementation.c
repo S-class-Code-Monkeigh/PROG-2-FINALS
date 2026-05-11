@@ -1,8 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "PDL.h"
 
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+name getName();
+address getAddress();
+date getDate();
+pdl getPdl();
 
-int main(int argc, char *argv[]) {
-	return 0;
-}
+void displayRecord(pdl r);//displays singular record;
+void displayAll();//displays all records
+void searchRecord();//searches record based off facility code
+pdl updateRecord();//returns new information for a pdl record
+pdl deleteRecord();//deletes an entire record
