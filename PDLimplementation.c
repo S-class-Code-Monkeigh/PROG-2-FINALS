@@ -6,6 +6,7 @@ pdl getPdl();
 
 void menu(){
 	printf("Hello there peter!");
+    printf("Hello there louise!");
 	printf("Hello Notpad++");
 }
 
