@@ -6,11 +6,6 @@
 
 #ifndef PDL_h
 #define PDL_h
-typedef struct{
-	char fName[30];
-	char inital;
-	char sName[30];
-}name;//first name, middle inital, surname
 
 typedef struct{
 	char city[30];
@@ -28,7 +23,7 @@ typedef struct{
 	char facilityCode[15]; //prison located combination of letters and numbers
 	int pdl_ID; //pdl ID number
 	int docketNum[15]; //criminal case, array because may have comitted multiple crimes
-	name pdl_name; // pdl name
+	char pdl_name[50]; // pdl name
 	address pdl_address; //pdl previous home address
 	date date_rendered; //pdl date of capture
 	date dateOfBirth; //pdl date of birth
@@ -36,7 +31,6 @@ typedef struct{
 	char status[10];//married/single
 }pdl; //person deprived of liberty struct
 
-name getName();
 address getAddress();
 date getDate();
 pdl getPdl();
