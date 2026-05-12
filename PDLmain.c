@@ -1,9 +1,10 @@
 #include "PDLimplementation.c"
 
 int main(){
-	date d;
+	pdl p;
 	do{
-		d = getDate();
-	}while(isdateValid(d) == 0);
+		printf("Please enter, Married, Single, Divorced, Seperated, Widowed: ");
+		scanf("%s", p.status);
+	}while(isStatusValid(p.status) == 0);
 	
 }

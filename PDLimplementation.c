@@ -40,7 +40,11 @@ int isdateValid(date d){
 }
 
 int isStatusValid(char c[]){
-	if(strcmp(allCap(c), "Married"))
+	if(strcmp(allCap(c), "MARRIED") == 0) return 1;
+	if(strcmp(allCap(c), "SINGLE")== 0) return 1;
+	if(strcmp(allCap(c), "DIVORCED")== 0) return 1;
+	if(strcmp(allCap(c), "SEPERATED")== 0) return 1;
+	if(strcmp(allCap(c), "WIDOWED")== 0) return 1;
 	return 0;
 }
 void displayRecord(pdl r);//displays singular record;
