@@ -1,6 +1,20 @@
 #include "PDL.h"
 
-address getAddress();
+address getAddress(){
+	address a;
+	printf("Enter city: ");
+	fgets(a.city, sizeof(a.city), stdin);
+	do{
+		printf("Enter zipcode (00000): ");
+		scanf("%d", &a.zipCode);
+	}while(a.zipCode > 99999 || a.zipCode < 10000);
+	fflush(stdin);
+	printf("Enter province: ");
+	fgets(a.province, sizeof(a.province), stdin);
+	
+	return a;
+
+}
 date getDate(){
 	date d;
 	printf("Month, Day, Year: ");
@@ -50,5 +64,6 @@ int isStatusValid(char c[]){
 void displayRecord(pdl r);//displays singular record;
 void displayAll();//displays all records
 void searchRecord();//searches record based off facility code
+
 pdl updateRecord();//returns new information for a pdl record
 pdl deleteRecord();//deletes an entire record
