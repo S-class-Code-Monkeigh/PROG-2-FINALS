@@ -21,13 +21,16 @@ date getDate(){
 	scanf("%s%d%d", d.Month, &d.day, &d.year);
 	return d;
 }
-pdl getPdl();
+pdl getPdl(){
+	pdl p;
+	
+}
 
 void menu(){
 	pdl p;
 	int choice;
 	printf("Person Deprived of Liberty records");
-	printf("1 - Display All Records, 2 - Search for a PDL.");
+	printf("[1] - Display All Records, [2] - Search for a PDL, [3] - Add a record");
 }
 char* allCap(char c[]){
 	int size = strlen(c), i;
