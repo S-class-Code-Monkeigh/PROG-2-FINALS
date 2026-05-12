@@ -1,8 +1,10 @@
 /*note function data types not final, di pa kaayo ko maayos sa file processing*/
 #include <stdio.h>
 #include <stdlib.h>
-#incldue <string.h>
+#include <string.h>
 #include <ctype.h>
+
+#define max 100
 
 #ifndef PDL_h
 #define PDL_h
@@ -36,9 +38,16 @@ date getDate();
 pdl getPdl();
 
 void menu(); //main menu
-void displayRecord(pdl r);//displays singular record;
-void displayAll();//displays all records
-void searchRecord();//searches record based off facility code
+char* allCap(char c[]);//capitalizes string
+int isdateValid(date);
+
+void displayRecord(pdl);//displays singular record; -Kharl
+void displayAll();//displays all records - Frenz
+void searchRecord();//searches record based off facility code - Matt
+
+
+int isStatusValid(char c[]);
+
 pdl updateRecord();//returns new information for a pdl record
 pdl deleteRecord();//deletes an entire record
 #endif

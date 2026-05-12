@@ -1,5 +1,9 @@
-#include "PDLimplementation.h"
+#include "PDLimplementation.c"
+
 int main(){
-	menu();
-	return 0;
+	date d;
+	do{
+		d = getDate();
+	}while(isdateValid(d) == 0);
+	
 }
