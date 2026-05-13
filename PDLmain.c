@@ -1,5 +1,10 @@
-#include "PDLimplementation.h"
+#include "PDLimplementation.c"
+
 int main(){
-	menu();
-	return 0;
+	pdl p;
+	do{
+		printf("Please enter, Married, Single, Divorced, Seperated, Widowed: ");
+		scanf("%s", p.status);
+	}while(isStatusValid(p.status) == 0);
+	
 }
