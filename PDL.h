@@ -36,7 +36,7 @@ typedef struct{
 
 address getAddress();
 date getDate();
-pdl getPdl();
+pdl getPdl();//get record
 
 void menu(); //main menu
 char* allCap(char c[]);//capitalizes string
@@ -44,11 +44,12 @@ int isdateValid(date);//checks if date entered is valid
 
 void displayRecord(pdl);//displays singular record; -Kharl
 void displayAll();//displays all records - Frenz
-void searchRecord();//searches record based off facility code - Matt
+pdl* searchRecord();//searches record based off facility code - Matt
 
 
 int isStatusValid(char c[]);//checks if entered marital status is valid
 
+pdl getRecord();
 pdl updateRecord();//returns new information for a pdl record
 pdl deleteRecord();//deletes an entire record
 #endif
