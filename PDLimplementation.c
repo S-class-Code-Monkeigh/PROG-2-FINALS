@@ -58,8 +58,8 @@ pdl getPdl(){
 	fgets(p.sex, sizeof(p.sex), stdin);
 	do{
 		printf("Enter Marital Status: ");
-		fgets(p.status, sizeof(p.status), stdin)
-	}
+		fgets(p.status, sizeof(p.status), stdin);
+	}while(isStatusValid(p.status) != 1);
 	
 }
 
