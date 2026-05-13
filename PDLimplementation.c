@@ -108,7 +108,7 @@ void displayAll(pdl r[]){
 		displayRecord(r[i]);
 	}
 }//displays all records
-void searchRecord();//searches record based off facility code
+void searchRecord(pdl r);//searches record based off facility code
 
-pdl updateRecord();//returns new information for a pdl record
-pdl deleteRecord();//deletes an entire record
+pdl updateRecord(pdl r);//returns new information for a pdl record
+pdl deleteRecord(pdl r);//deletes an entire record

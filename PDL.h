@@ -49,7 +49,7 @@ pdl* searchRecord();//searches record based off facility code - Matt
 
 int isStatusValid(char c[]);//checks if entered marital status is valid
 
-pdl getRecord();
-pdl updateRecord();//returns new information for a pdl record
-pdl deleteRecord();//deletes an entire record
+pdl getRecord(pdl r);
+pdl updateRecord(pdl r);//returns new information for a pdl record
+pdl deleteRecord(pdl r);//deletes an entire record
 #endif
