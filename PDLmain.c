@@ -7,4 +7,6 @@ int main(){
 		scanf("%s", p.status);
 	}while(isStatusValid(p.status) == 0);
 	
+	printf("Test123");
+	
 }
