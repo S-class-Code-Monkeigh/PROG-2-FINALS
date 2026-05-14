@@ -1,0 +1,13 @@
+r1451
+	 2023015158	 1	 Isaiah Franco
+	 Talisay
+	 45000	 Cebu
+	 may	 14	 2026	 february	 6	 2007	 male
+	 MARRIED
+
+r13151
+	 2023015158	 1	 Alex
+	 Pardo
+	 31500	 Cebu
+	 May	 13	 2026	 January	 5	 2007	 female	 MARRIED
+

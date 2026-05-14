@@ -4,6 +4,7 @@ address getAddress(){
 	address a;
 	printf("Enter city: ");
 	fgets(a.city, sizeof(a.city), stdin);
+	fflush(stdin);
 	do{
 		printf("Enter zipcode (00000): ");
 		scanf("%d", &a.zipCode);
@@ -21,46 +22,58 @@ date getDate(){
 	scanf("%s%d%d", d.Month, &d.day, &d.year);
 	return d;
 }
-//	char facilityCode[15]; //prison located combination of letters and numbers
-//	int pdl_ID; //pdl ID number
-//	int docketNum[15]; //criminal case, array because may have comitted multiple crimes
-//	char pdl_name[50]; // pdl name
-//	address pdl_address; //pdl previous home address
-//	date date_rendered; //pdl date of capture
-//	date dateOfBirth; //pdl date of birth
-//	char sex[7]; //gender
-//	char status[10];//married/single
+
 pdl getPdl(){
 	pdl p;
-	int crimes = 0, i;
+	int i;
 	printf("Enter Facility Code: ");
 	fgets(p.facilityCode, sizeof(p.facilityCode), stdin);
+	fflush(stdin);
+	
 	printf("Enter ID number: ");
 	scanf("%d", &p.pdl_ID);
-	printf("Crimes Committed: ");
-	scanf("%d", &crimes);
-	for(i = 0; i < crimes; i++){
+	fflush(stdin);
+	
+	printf("Number Crimes Committed: ");
+	scanf("%d", &p.noCrimes);
+	fflush(stdin);
+	
+	for(i = 0; i < p.noCrimes; i++){
 		printf("Enter docket Num: ");
 		scanf("%d", &p.docketNum[i]);
 	}
+	fflush(stdin);
+	
+	printf("Enter PDL name: ");
+	fgets(p.pdl_name, sizeof(p.pdl_name), stdin);
+	fflush(stdin);
+	
+	printf("Enter Address before incarceration:\n");
 	p.pdl_address = getAddress();
-	do{
-		printf("Enter Address before incarceration:\n");
-		p.date_rendered = getDate();
-	}while(isdateValid(p.date_rendered) != 1);
+	fflush(stdin);
 	
 	do{
-		printf("Enter Date of Birth:\n");
+		printf("Enter Date rendered:\n");
 		p.date_rendered = getDate();
 	}while(isdateValid(p.date_rendered) != 1);
 	fflush(stdin);
+	
+	do{
+		printf("Enter Date of Birth:\n");
+		p.dateOfBirth = getDate();
+	}while(isdateValid(p.dateOfBirth) != 1);
+	fflush(stdin);
+	
 	printf("Enter Sex: ");
 	fgets(p.sex, sizeof(p.sex), stdin);
+	fflush(stdin);
+	
 	do{
 		printf("Enter Marital Status: ");
 		fgets(p.status, sizeof(p.status), stdin);
-	}while(isStatusValid(p.status) != 1);
+	}while(isStatusValid(p.status) == 0);
 	
+	return p;
 }
 
 void menu(){
@@ -68,6 +81,7 @@ void menu(){
 	int choice;
 	printf("Person Deprived of Liberty records");
 	printf("[1] - Display All Records, [2] - Search for a PDL, [3] - Add a record");
+	//switch(choice);
 }
 char* allCap(char c[]){
 	int size = strlen(c), i;
@@ -94,21 +108,64 @@ int isdateValid(date d){
 }
 
 int isStatusValid(char c[]){
-	if(strcmp(allCap(c), "MARRIED") == 0) return 1;
-	if(strcmp(allCap(c), "SINGLE")== 0) return 1;
-	if(strcmp(allCap(c), "DIVORCED")== 0) return 1;
-	if(strcmp(allCap(c), "SEPERATED")== 0) return 1;
-	if(strcmp(allCap(c), "WIDOWED")== 0) return 1;
-	return 0;
+
+	if(strcmp(allCap(c), "MARRIED\n") == 0) return 1;
+	if(strcmp(allCap(c), "SINGLE\n") == 0) return 1;
+	if(strcmp(allCap(c), "DIVORCED\n")== 0) return 1;
+	if(strcmp(allCap(c), "SEPERATED\n")== 0) return 1;
+	if(strcmp(allCap(c), "WIDOWED\n")== 0) return 1;
+	
+	else return 0;
 }
-void displayRecord(pdl r);//displays singular record;
+void displayRecord(pdl r){
+	printf("wapakoy sulod");
+}//displays singular record;
 void displayAll(pdl r[]){
 	int i;
 	for(i = 0; i < max; i++){
 		displayRecord(r[i]);
 	}
 }//displays all records
-void searchRecord(pdl r);//searches record based off facility code
 
+pdl* searchRecord(pdl r);//searches record based off facility code
+
+//	char facilityCode[15]; //prison located combination of letters and numbers
+//	int pdl_ID; //pdl ID number
+//  int noCrimes; //number of crimes committed for docket number
+//	int docketNum[15]; //criminal case, array because may have comitted multiple crimes
+//	char pdl_name[50]; // pdl name
+//	address pdl_address; //pdl previous home address
+//	date date_rendered; //pdl date of capture
+//	date dateOfBirth; //pdl date of birth
+//	char sex[7]; //gender
+//	char status[10];//married/single
+
+void getRecord()
+{
+	pdl r;
+	int quit = 0;
+	do
+	{
+		fflush(stdin);
+		
+		fptr = fopen("pdlRecord.txt", "a");
+		if(fptr == NULL){
+			printf("File Failed to Open!");
+		}
+
+		r = getPdl();
+		fprintf(fptr, "%s\t %d\t %d\t %s\t %s\t %d\t %s\t %s\t %d\t %d\t %s\t %d\t %d\t %s\t %s\n", 
+		r.facilityCode, r.pdl_ID, r.noCrimes, r.pdl_name, r.pdl_address.city, r.pdl_address.zipCode, r.pdl_address.province, 
+		r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year, r.dateOfBirth.Month, r.dateOfBirth.day, 
+		r.dateOfBirth.year, r.sex, r.status);
+		fclose(fptr);
+		
+		printf("Press [1] - quit");
+		scanf("%d", &quit);
+		
+	}while(quit != 1);
+	
+	
+}
 pdl updateRecord(pdl r);//returns new information for a pdl record
 pdl deleteRecord(pdl r);//deletes an entire record
