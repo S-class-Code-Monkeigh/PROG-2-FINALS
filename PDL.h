@@ -10,6 +10,8 @@
 #define PDL_h
 
 FILE *fptr;
+FILE *docketptr;
+
 typedef struct{
 	char city[30];
 	int zipCode;
@@ -26,7 +28,6 @@ typedef struct{
 	char facilityCode[15]; //prison located combination of letters and numbers
 	int pdl_ID; //pdl ID number
 	int noCrimes; //number of crimes committed for docket number
-	int docketNum[15]; //criminal case, array because may have comitted multiple crimes
 	char pdl_name[50]; // pdl name
 	address pdl_address; //pdl previous home address
 	date date_rendered; //pdl date of capture
@@ -43,14 +44,17 @@ void menu(); //main menu
 char* allCap(char c[]);//capitalizes string
 int isdateValid(date);//checks if date entered is valid
 
+int getDocketno();
+void docket();
 void displayRecord(pdl r);//displays singular record; -Kharl
 void displayAll();//displays all records - Frenz
-pdl* searchRecord(pdl r);//searches record based off facility code - Matt
+//searches record based off facility code - Matt
 
 
 int isStatusValid(char c[]);//checks if entered marital status is valid
 
-void getRecord();
-pdl updateRecord(pdl r);//returns new information for a pdl record
-pdl deleteRecord(pdl r);//deletes an entire record
+void addRecord();
+void searchRecord();
+void updateRecord();//returns new information for a pdl record
+void deleteRecord();//deletes an entire record
 #endif

@@ -1,7 +1,7 @@
 #include "PDLimplementation.c"
 
 int main(){
-	 getRecord();
+	menu();
 	
 	return 0;
 }
