@@ -40,21 +40,22 @@ address getAddress();
 date getDate();
 pdl getPdl();//get record
 
+//misc functions for ease of use
 void menu(); //main menu
 char* allCap(char c[]);//capitalizes string
 int isdateValid(date);//checks if date entered is valid
-
-int getDocketno();
-void docket();
-void displayRecord(pdl r);//displays singular record; -Kharl
-void displayAll();//displays all records - Frenz
-//searches record based off facility code - Matt
-
-
 int isStatusValid(char c[]);//checks if entered marital status is valid
 
-void addRecord();
-void searchRecord();
+//seperate function to simplify docket number storage
+int getDocketno();//gets information for the docket numbers
+void appendDocketNo(int noCrimes, int ID); //adds docket numbers to the .txt file -to be called in addRecord()
+void docketNoDisplay(int noCrimes, int ID);//displays docket numbers -to be called in displayRecord()
+
+//main functions
+void displayRecord(pdl r);//displays singular record
+void displayAll();//displays all records
+void addRecord(); //adds a new record to the text file
+void searchRecord();//searches record based off facility code or ID number
 void updateRecord();//returns new information for a pdl record
 void deleteRecord();//deletes an entire record
 #endif

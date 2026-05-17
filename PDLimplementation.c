@@ -77,7 +77,7 @@ int getDocketno(){
 	return d;
 }
 
-void appendDocketNo(int noCrimes){
+void appendDocketNo(int noCrimes, int ID){
 	int docketNo[15], i;
 	
 	for(i = 0; i < noCrimes; i++){
@@ -99,7 +99,7 @@ void appendDocketNo(int noCrimes){
 
 void docketNoDisplay(int noCrimes, int ID){
 	int docketNo[15], i;
-	docketptr = fopen("docketNoRecord", "r");
+	docketptr = fopen("docketNoRecord.txt", "r");
 	if(docketptr == NULL){
 		printf("COULD NOT OPEN FILE");
 	}
@@ -107,7 +107,7 @@ void docketNoDisplay(int noCrimes, int ID){
 		for(i = 0; i < noCrimes; i++){
 			fscanf(docketptr,"%d ", docketNo[i]);
 		}
-		
+		printf("== DOCKET NUMBERS ==\n");
 	}
 }
 void menu(){
@@ -120,8 +120,8 @@ void menu(){
 //	}
 //	fclose(fptr);
     do {
-    	//system("cls");
-        printf("\n=== PERSON DEPRIVED OF LIBERTY RECORDS SYSTEM ===\n");
+    	
+        printf("=== PERSON DEPRIVED OF LIBERTY RECORDS SYSTEM ===\n");
         printf("[1] - Add a Record\n");
         printf("[2] - Search/Find a Record\n");
         printf("[3] - Update/Edit a Record\n");
@@ -149,7 +149,7 @@ void menu(){
                 break;
                 
             case 5:printf("Dispaly all record!\n");
-                //displayAll(r);
+                displayAll(r);
                 break;
                 
             case 6:
@@ -159,7 +159,7 @@ void menu(){
             default:
                 printf("Invalid choice! Please try again.\n");
         }
-        
+        //system("cls");
     } while(choice != 6);
 }
 char* allCap(char c[]){
@@ -197,7 +197,7 @@ int isStatusValid(char c[]){
 	else return 0;
 }
 void displayRecord(pdl r){
-    printf("\n=== PDL RECORD ===\n");
+    printf("=== PDL RECORD ===\n");
     printf("Facility Code: %s\n", r.facilityCode);
     printf("PDL ID: %d\n", r.pdl_ID);
     printf("Name: %s\n", r.pdl_name);
@@ -207,15 +207,29 @@ void displayRecord(pdl r){
     printf("Sex: %s\n", r.sex);
     printf("Marital Status: %s\n", r.status);
     printf("Crimes: %d\n", r.noCrimes);
-    printf("Docket Numbers: ");
+    
     printf("\n");
 }
-
-void displayAll(pdl r[]){
-	int i;
-	for(i = 0; i < max; i++){
-		displayRecord(r[i]);
+/* != EOF*/
+void displayAll(){
+	pdl r;
+	
+	fptr = fopen("pdlRecord.txt", "r");
+	if(fptr == NULL) printf("Failed to read file.");
+	else{
+		printf("=== ALL PDL RECORD ===\n");
+		while(fscanf(fptr, "%s %d %d %[^\n] %s %d %s %s %d %d %s %d %d %s %s",
+                 r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
+                 r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
+                 r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
+                 r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
+                 r.sex, r.status) != EOF){
+                 displayRecord(r);	   	
+            
+		 }
+        
 	}
+	fclose(fptr);
 }
 
 void searchRecord(){
@@ -245,7 +259,7 @@ void searchRecord(){
             return;
     }
 
-    FILE *fptr = fopen("pdlRecord.txt", "r");
+    fptr = fopen("pdlRecord.txt", "r");
     if(fptr == NULL){
         printf("Failed to open file!\n");
         return;
@@ -256,7 +270,7 @@ void searchRecord(){
                  r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
                  r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
                  r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
-                 r.sex, r.status) == 15){
+                 r.sex, r.status) != EOF){
         
         if(searchType == 1 && strcmp(searchfCode, r.facilityCode) == 0){
             displayRecord(r);
@@ -277,13 +291,13 @@ void searchRecord(){
 void addRecord()
 {
 
-	    pdl r;
+	pdl r;
     char choice;
     
     do{
         r = getPdl();
         
-        FILE *fptr = fopen("pdlRecord.txt", "a");
+        fptr = fopen("pdlRecord.txt", "a");
         if(fptr == NULL){
             printf("File Failed to Open!\n");
             return;
@@ -295,6 +309,8 @@ void addRecord()
                 r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year,
                 r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year,
                 r.sex, r.status);
+                
+            //appendDocketNo(r.noCrimes);
         fclose(fptr);
         
         printf("\nAdd another record? (y/n): ");
