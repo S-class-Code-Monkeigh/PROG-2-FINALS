@@ -4,12 +4,13 @@
 #include <string.h>
 #include <ctype.h>
 
-#define max 2
+#define max 50
 
 #ifndef PDL_h
 #define PDL_h
 
 FILE *fptr;
+FILE *temp; //for delete function
 FILE *docketptr;
 
 typedef struct{
@@ -57,5 +58,6 @@ void displayAll();//displays all records
 void addRecord(); //adds a new record to the text file
 void searchRecord();//searches record based off facility code or ID number
 void updateRecord();//returns new information for a pdl record
-void deleteRecord();//deletes an entire record
+void deleteRecord();/*deletes a record by copies .txt file to another .txt file except for 
+	record to be deleted then renames the temp.txt file to the original*/
 #endif
