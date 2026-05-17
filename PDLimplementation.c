@@ -4,7 +4,7 @@ address getAddress(){
 	address a;
 	printf("Enter city: ");
 	fgets(a.city, sizeof(a.city), stdin);
-	fflush(stdin);
+	a.city[strcspn(a.city, "\n")] = '\0'; //removes\n (helps with formatting) by going to the index with "\n" and replacing it with \0
 	do{
 		printf("Enter zipcode (00000): ");
 		scanf("%d", &a.zipCode);
@@ -12,14 +12,21 @@ address getAddress(){
 	fflush(stdin);
 	printf("Enter province: ");
 	fgets(a.province, sizeof(a.province), stdin);
-	
+	a.province[strcspn(a.province, "\n")] = '\0';
 	return a;
 
 }
 date getDate(){
 	date d;
-	printf("Enter Valid Month, Day, Year: ");
-	scanf("%s%d%d", d.Month, &d.day, &d.year);
+	printf("Enter Valid Date:\n");
+	printf("Month: ");
+	fgets(d.Month, sizeof(d.Month), stdin);
+	d.Month[strcspn(d.Month, "\n")] = '\0';
+	
+	printf("Day: ");
+	scanf("%d", &d.day);
+	printf("Year: ");
+	scanf("%d", &d.year);
 	return d;
 }
 
@@ -28,7 +35,7 @@ pdl getPdl(){
 	int i;
 	printf("Enter Facility Code: ");
 	fgets(p.facilityCode, sizeof(p.facilityCode), stdin);
-	fflush(stdin);
+	p.facilityCode[strcspn(p.facilityCode, "\n")] = '\0';
 	
 	printf("Enter ID number: ");
 	scanf("%d", &p.pdl_ID);
@@ -40,11 +47,10 @@ pdl getPdl(){
 	
 	printf("Enter PDL name: ");
 	fgets(p.pdl_name, sizeof(p.pdl_name), stdin);
-	fflush(stdin);
+	p.pdl_name[strcspn(p.pdl_name, "\n")]='\0'; 
 	
 	printf("Enter Address before incarceration:\n");
 	p.pdl_address = getAddress();
-	fflush(stdin);
 	
 	do{
 		printf("Enter Date rendered:\n");
@@ -60,11 +66,13 @@ pdl getPdl(){
 	
 	printf("Enter Sex: ");
 	fgets(p.sex, sizeof(p.sex), stdin);
-	fflush(stdin);
+	p.sex[strcspn(p.sex, "\n")] ='\0';
 	
 	do{
 		printf("Enter Marital Status: ");
 		fgets(p.status, sizeof(p.status), stdin);
+		p.status[strcspn(p.status, "\n")] = '\0';
+		
 	}while(isStatusValid(p.status) == 0);
 	
 	return p;
@@ -135,7 +143,7 @@ void menu(){
         switch(choice) {
             case 1:
                 addRecord();
-                printf("\nRecord added successfully!\n");
+                printf("Record added successfully!\n");
                 break;
                 
             case 2: printf("Search for a record!\n");
@@ -146,6 +154,7 @@ void menu(){
                 break;
                 
             case 4:printf("Delete a record!\n");
+            	deleteRecord();
                 break;
                 
             case 5:printf("Dispaly all record!\n");
@@ -188,16 +197,16 @@ int isdateValid(date d){
 
 int isStatusValid(char c[]){
 
-	if(strcmp(allCap(c), "MARRIED\n") == 0) return 1;
-	if(strcmp(allCap(c), "SINGLE\n") == 0) return 1;
-	if(strcmp(allCap(c), "DIVORCED\n")== 0) return 1;
-	if(strcmp(allCap(c), "SEPERATED\n")== 0) return 1;
-	if(strcmp(allCap(c), "WIDOWED\n")== 0) return 1;
+	if(strcmp(allCap(c), "MARRIED") == 0) return 1;
+	if(strcmp(allCap(c), "SINGLE") == 0) return 1;
+	if(strcmp(allCap(c), "DIVORCED")== 0) return 1;
+	if(strcmp(allCap(c), "SEPERATED")== 0) return 1;
+	if(strcmp(allCap(c), "WIDOWED")== 0) return 1;
 	
 	else return 0;
 }
 void displayRecord(pdl r){
-    printf("=== PDL RECORD ===\n");
+    printf("\n=== PDL RECORD ===\n");
     printf("Facility Code: %s\n", r.facilityCode);
     printf("PDL ID: %d\n", r.pdl_ID);
     printf("Name: %s\n", r.pdl_name);
@@ -217,13 +226,13 @@ void displayAll(){
 	fptr = fopen("pdlRecord.txt", "r");
 	if(fptr == NULL) printf("Failed to read file.");
 	else{
-		printf("=== ALL PDL RECORD ===\n");
-		while(fscanf(fptr, "%s %d %d %[^\n] %s %d %s %s %d %d %s %d %d %s %s",
-                 r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
-                 r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
-                 r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
-                 r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
-                 r.sex, r.status) != EOF){
+		printf("\n=== ALL PDL RECORD ===\n");
+		while(fscanf(fptr, "%[^;];%d;%d;%[^;];%[^;];%d;%[^;];%[^;];%d;%d;%[^;];%d;%d;%[^;];%[^\n]\n",
+             r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
+             r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
+             r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
+             r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
+             r.sex, r.status) != EOF){
                  displayRecord(r);	   	
             
 		 }
@@ -265,12 +274,12 @@ void searchRecord(){
         return;
     }
     
-    while(fscanf(fptr, "%s %d %d %[^\n] %s %d %s %s %d %d %s %d %d %s %s",
-                 r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
-                 r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
-                 r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
-                 r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
-                 r.sex, r.status) != EOF){
+    while(fscanf(fptr, "%[^;];%d;%d;%[^;];%[^;];%d;%[^;];%[^;];%d;%d;%[^;];%d;%d;%[^;];%[^\n]\n",
+             r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
+             r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
+             r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
+             r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
+             r.sex, r.status) != EOF){
         
         if(searchType == 1 && strcmp(searchfCode, r.facilityCode) == 0){
             displayRecord(r);
@@ -303,12 +312,12 @@ void addRecord()
             return;
         }
         
-        fprintf(fptr, "%s %d %d %s %s %d %s %s %d %d %s %d %d %s %s\n", 
-                r.facilityCode, r.pdl_ID, r.noCrimes, r.pdl_name, 
-                r.pdl_address.city, r.pdl_address.zipCode, r.pdl_address.province,
-                r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year,
-                r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year,
-                r.sex, r.status);
+		fprintf(fptr, "%s;%d;%d;%s;%s;%d;%s;%s;%d;%d;%s;%d;%d;%s;%s\n", 
+	        r.facilityCode, r.pdl_ID, r.noCrimes, r.pdl_name, 
+	        r.pdl_address.city, r.pdl_address.zipCode, r.pdl_address.province,
+	        r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year,
+	        r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year,
+	        r.sex, r.status);
                 
             //appendDocketNo(r.noCrimes);
         fclose(fptr);
@@ -317,37 +326,120 @@ void addRecord()
         scanf(" %c", &choice);
         while(getchar() != '\n');
         
-    }while(choice == 'y' || choice == 'Y');
+    }while(toupper(choice) == 'Y');
 	
 }
 void updateRecord(){
 	
 }
-void deleteRecord();
-
-/*addRecord(): 	
+void deleteRecord(){
 	pdl r;
-	int quit = 0;
-	do
-	{
-		fflush(stdin);
-		
-		fptr = fopen("pdlRecord.txt", "a");
-		if(fptr == NULL){
-			printf("File Failed to Open!");
-		}
-	else{
-		r = getPdl();
-		fprintf(fptr,"%s. %d. %d. %s. %s. %d. %s. %s. %d. %d. %s. %d. %d. %s. %s\n", 
-		r.facilityCode, r.pdl_ID, r.noCrimes, r.pdl_name, r.pdl_address.city, r.pdl_address.zipCode, r.pdl_address.province, 
-		r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year, r.dateOfBirth.Month, r.dateOfBirth.day, 
-		r.dateOfBirth.year, r.sex, r.status);
-		fclose(fptr);
-		
-		printf("Press [1] - quit");
-		scanf("%d", &quit);
-	}
+    int deleteID = 0, recordFound = 0;
 
-		
-	}while(quit != 1);
+    // Open original for reading, temp for writing
+    fptr = fopen("pdlRecord.txt", "r");
+    if (fptr == NULL) {
+        printf("Failed to read file. No records exist yet.\n");
+        return;
+    }
+
+    temp = fopen("tempRecord.txt", "w");
+    if (temp == NULL) {
+        printf("Failed to create temporary file.\n");
+        fclose(fptr);
+        return;
+    }
+
+    printf("Enter PDL ID to delete PDL record: ");
+    scanf("%d", &deleteID);
+    
+    // Clear the input buffer
+    while(getchar() != '\n');
+
+    // Read through the file using the exact same format string as displayAll()
+    while(fscanf(fptr, "%[^;];%d;%d;%[^;];%[^;];%d;%[^;];%[^;];%d;%d;%[^;];%d;%d;%[^;];%[^\n]\n",
+             r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
+             r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
+             r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
+             r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
+             r.sex, r.status) != EOF) {
+        
+        // If ID matches, skip writing it to temp (effectively deleting it)
+        if (deleteID == r.pdl_ID) {
+            recordFound = 1;
+            continue;
+        }
+        
+		fprintf(temp, "%s;%d;%d;%s;%s;%d;%s;%s;%d;%d;%s;%d;%d;%s;%s\n", 
+	        r.facilityCode, r.pdl_ID, r.noCrimes, r.pdl_name, 
+	        r.pdl_address.city, r.pdl_address.zipCode, r.pdl_address.province,
+	        r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year,
+	        r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year,
+	        r.sex, r.status); 
+    }
+
+    fclose(fptr);
+    fclose(temp);
+
+    if (recordFound != 1) {
+        remove("tempRecord.txt");
+        printf("Record Could not be deleted (ID not found)!\n");
+    } else {
+        remove("pdlRecord.txt");
+        rename("tempRecord.txt", "pdlRecord.txt");
+        printf("Record deleted successfully!\n");
+    }
+}
+
+
+/*
+	
 	*/
+	
+	/*	pdl r;
+	int deleteID = 0, recordFound  = 0;
+	//copies .txt file to another .txt file except for 
+	//record to be deleted then renames the temp.txt file to the original
+	fptr = fopen("pdlRecord.txt", "r");
+	temp = fopen("tempRecord.txt", "w");
+	printf("Enter PDL ID to delete PDL record: ");
+	scanf("%d", &deleteID);
+	if(fptr == NULL) printf("Failed to read file.");
+	else{
+		printf("\n=== ALL PDL RECORD ===\n");
+		while(fscanf(fptr, "%s %d %d %s %s %d %s %s %d %d %s %d %d %s %s",
+	                 r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
+	                 r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
+	                 r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
+	                 r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
+	                 r.sex, r.status) != EOF){
+	            	
+	            	//printf("ID to be deleted: %d, PDL_ID now:%d\n", deleteID, r.pdl_ID);
+	            	if(deleteID == r.pdl_ID){
+	            		recordFound = 1;
+	            		continue;
+					}	   
+						fprintf(temp, "%s %d %d %s %s %d %s %s %d %d %s %d %d %s %s", 
+	                r.facilityCode, r.pdl_ID, r.noCrimes, r.pdl_name, 
+	                r.pdl_address.city, r.pdl_address.zipCode, r.pdl_address.province,
+	                r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year,
+	                r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year,
+	                r.sex, r.status); 
+					
+	            
+			 }
+			 if(recordFound != 1){
+			 		fclose(fptr);
+			 		fclose(temp);
+			 		remove("tempRecord.txt");
+					printf("Record Could not be deleted (ID not found)!\n");
+			}
+			else{
+			fclose(fptr);
+			fclose(temp);
+			remove("pdlRecord.txt");
+			rename("tempRecord.txt", "pdlRecord.txt");
+			printf("Record deleted!\n");
+		}
+        
+	}*/
