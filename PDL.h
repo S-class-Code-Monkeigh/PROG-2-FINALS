@@ -4,12 +4,15 @@
 #include <string.h>
 #include <ctype.h>
 
-#define max 50
+#define dMax 15
 
 #ifndef PDL_h
 #define PDL_h
 
-//i put the globals into the definition file kay mu error sha on my end for some reason saying nga its been defined elsewhere
+FILE *fptr;
+FILE *temp; //for record delete function
+FILE *docketptr;
+FILE *dtemp;//for docket delete function
 
 typedef struct{
 	char city[30];
@@ -48,7 +51,8 @@ int isStatusValid(char c[]);//checks if entered marital status is valid
 //seperate function to simplify docket number storage
 int getDocketno();//gets information for the docket numbers
 void appendDocketNo(int noCrimes, int ID); //adds docket numbers to the .txt file -to be called in addRecord()
-void docketNoDisplay(int noCrimes, int ID);//displays docket numbers -to be called in displayRecord()
+void docketNoDisplay(int searchID);//displays docket numbers -to be called in displayRecord()
+void deleteDocket(int deleteID); //deletes docket record
 
 //main functions
 void displayRecord(pdl r);//displays singular record
