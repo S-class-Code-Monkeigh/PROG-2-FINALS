@@ -62,4 +62,8 @@ void searchRecord();//searches record based off facility code or ID number
 void updateRecord();//returns new information for a pdl record
 void deleteRecord();/*deletes a record by copies .txt file to another .txt file except for 
 	record to be deleted then renames the temp.txt file to the original*/
+
+void inputError(); //for input error message and clearing buffer
+void clearInBuff(); //while getchar loop for clearing buffer (ako lng ni gibutang for now but i guess ma gamit rman fflush(stdin) pd)
+
 #endif

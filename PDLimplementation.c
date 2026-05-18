@@ -202,6 +202,7 @@ void menu(){
                 break;
                 
             case 3:printf("Update a record!\n");
+				updateRecord();
                 break;
                 
             case 4:printf("Delete a record!\n");
@@ -380,17 +381,92 @@ void addRecord()
     }while(toupper(choice) == 'Y');
 	
 }
-void updateRecord(){
+void updateRecord()
+{
+	pdl r;
 	
+	int updateID, found = 0;
+	
+	printf("Enter PDL ID of ENTRY you wish to UPDATE:\n> ");
+	
+	while(1)
+	{
+		if(scanf("%d", &updateID)!=1)
+		{
+			inputError();
+			continue;
+		}
+		break;
+	}
+	
+	fptr = fopen("pdlRecord.txt", "r");
+	temp = fopen("tempRecord.txt", "w");
+	
+	if(fptr == NULL || temp == NULL)
+	{
+		printf("Error opening file.\n");
+		return;
+	}
+	
+	clearInBuff();
+	
+	while(fscanf(fptr, "%[^;];%d;%d;%[^;];%[^;];%d;%[^;];%[^;];%d;%d;%[^;];%d;%d;%[^;];%[^\n]\n",
+				 r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
+				 r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
+				 r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
+				 r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
+				 r.sex, r.status) != EOF)
+	{
+		if(updateID==r.pdl_ID)
+		{
+			found = 1;
+			
+			printf("\n=== CURRENT RECORD ===\n");
+			displayRecord(r);
+			
+			printf("\n=== ENTER NEW DATA ===\n");
+			pdl newRecord = getPdl();
+			
+			fprintf(temp, "%s;%d;%d;%s;%s;%d;%s;%s;%d;%d;%s;%d;%d;%s;%s\n", 
+					newRecord.facilityCode, newRecord.pdl_ID, newRecord.noCrimes, newRecord.pdl_name, 
+					newRecord.pdl_address.city, newRecord.pdl_address.zipCode, newRecord.pdl_address.province,
+					newRecord.date_rendered.Month, newRecord.date_rendered.day, newRecord.date_rendered.year,
+					newRecord.dateOfBirth.Month, newRecord.dateOfBirth.day, newRecord.dateOfBirth.year,
+					newRecord.sex, newRecord.status);
+		}
+		else
+		{
+			fprintf(temp, "%s;%d;%d;%s;%s;%d;%s;%s;%d;%d;%s;%d;%d;%s;%s\n", 
+					r.facilityCode, r.pdl_ID, r.noCrimes, r.pdl_name, 
+					r.pdl_address.city, r.pdl_address.zipCode, r.pdl_address.province,
+					r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year,
+					r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year,
+					r.sex, r.status);
+		}
+	}
+		fclose(fptr);
+		fclose(temp);
+		
+		if(found)
+		{
+			remove("pdlRecord.txt");
+			rename("tempRecord.txt", "pdlRecord.txt");
+			printf("Record updated successfully!\n");
+		}
+		else
+		{
+			remove("tempRecord.txt");
+			printf("Record not found!\n");
+		}
 }
 void deleteRecord(){
-	/*Creates a temp .txt file copies everything except the record that matches the deleteID and renames the temp file to the original .txt file's name*/
 	pdl r;
     int deleteID = 0, recordFound = 0;
 
+    // Open original for reading, temp for writing
     fptr = fopen("pdlRecord.txt", "r");
     if (fptr == NULL) {
-        printf("Failed to read file. No records exist yet!\n");
+        printf("Failed to read file. No records exist yet.\n");
         return;
     }
 
