@@ -86,47 +86,97 @@ int getDocketno(){
 }
 
 void appendDocketNo(int noCrimes, int ID){
-	int docketNo[15], i;
-	
-	for(i = 0; i < noCrimes; i++){
-		docketNo[i] = getDocketno();
-	}
-	docketptr = fopen("docketNoRecord.txt", "a");
-	if(docketptr == NULL){
-		printf("COULD NOT OPEN FILE");
-	}
-	else{
-		for(i = 0; i <noCrimes; i++){
-			fprintf(docketptr,"%d ", docketNo[i]);
-		}
-		fprintf(docketptr,"\n");
-	}
-	
-	fclose(fptr);
+	int docketNo[dMax], i;
+    docketptr = fopen("docketNoRecord.txt", "a");
+    
+    if (docketptr == NULL) {
+        printf("Could not open docket file!\n");
+        return;
+    }
+    
+    for (i = 0; i < noCrimes; i++) {
+        docketNo[i] = getDocketno();
+    }
+    
+    fprintf(docketptr, "%d %d", ID, noCrimes);
+    for (i = 0; i < noCrimes; i++) {
+        fprintf(docketptr, " %d", docketNo[i]);
+    }
+    fprintf(docketptr, "\n"); 
+    
+    fclose(docketptr);
 }
 
-void docketNoDisplay(int noCrimes, int ID){
-	int docketNo[15], i;
-	docketptr = fopen("docketNoRecord.txt", "r");
-	if(docketptr == NULL){
-		printf("COULD NOT OPEN FILE");
-	}
-	else{
-		for(i = 0; i < noCrimes; i++){
-			fscanf(docketptr,"%d ", docketNo[i]);
-		}
-		printf("== DOCKET NUMBERS ==\n");
-	}
+void docketNoDisplay(int searchID){
+	int id, noCrimes, docket, i;
+    docketptr = fopen("docketNoRecord.txt", "r");
+    
+    if (docketptr == NULL) {
+    	printf("Could not display docket record!");
+        return; 
+    }
+    
+    while (fscanf(docketptr, "%d %d", &id, &noCrimes) == 2) {
+        if (id == searchID) {
+            printf("== DOCKET NUMBERS ==\n");
+            for (i = 0; i < noCrimes; i++) {
+                fscanf(docketptr, "%d", &docket);
+                printf("\t= Docket No. %d: %d\n", i + 1, docket);
+            }
+            printf("\n");
+            fclose(docketptr);
+            return; 
+        } else {
+            for (i = 0; i < noCrimes; i++) {
+                fscanf(docketptr, "%d", &docket); 
+            }
+        }
+    }
+    fclose(docketptr);
+}
+
+void deleteDocket(int deleteID){
+	int noCrimes, id, i;
+	int docket[dMax];
+    docketptr = fopen("docketNoRecord.txt", "r");
+    dtemp = fopen("tempdocket.txt", "w");
+
+    if (docketptr == NULL) {
+    	printf("Could not display docket record!\n");
+        return; 
+    }
+    if (dtemp == NULL) {
+        printf("Failed to create temporary docket file!\n");
+        fclose(docketptr);
+        return;
+    }
+    
+    while (fscanf(docketptr, "%d %d", &id, &noCrimes) == 2) {
+        if (id == deleteID) {
+            for (i = 0; i < noCrimes; i++) {
+                fscanf(docketptr, "%d", &docket[i]);
+            }
+        } else {
+            fprintf(dtemp, "%d %d", id, noCrimes);
+            for (i = 0; i < noCrimes; i++) {
+                fscanf(docketptr, "%d", &docket[i]);
+                fprintf(dtemp, " %d", docket);
+            }
+            fprintf(dtemp, "\n");
+        }
+    }
+    
+    fclose(docketptr);
+    fclose(dtemp);
+    
+    remove("docketNoRecord.txt");
+    rename("tempdocket.txt", "docketNoRecord.txt");
+	
 }
 void menu(){
 	pdl r;
 	int choice;
-    
-//    fptr = fopen("pdlRecord.txt", "w");
-//    if(fptr == NULL){
-//    	printf("File could not be opened "); //creates file
-//	}
-//	fclose(fptr);
+
     do {
     	
         printf("=== PERSON DEPRIVED OF LIBERTY RECORDS SYSTEM ===\n");
@@ -140,6 +190,7 @@ void menu(){
         scanf("%d", &choice);
         fflush(stdin);
         
+        system("cls");
         switch(choice) {
             case 1:
                 addRecord();
@@ -168,7 +219,7 @@ void menu(){
             default:
                 printf("Invalid choice! Please try again.\n");
         }
-        //system("cls");
+        
     } while(choice != 6);
 }
 char* allCap(char c[]){
@@ -216,10 +267,10 @@ void displayRecord(pdl r){
     printf("Sex: %s\n", r.sex);
     printf("Marital Status: %s\n", r.status);
     printf("Crimes: %d\n", r.noCrimes);
-    
+    docketNoDisplay(r.pdl_ID);
     printf("\n");
 }
-/* != EOF*/
+
 void displayAll(){
 	pdl r;
 	
@@ -233,7 +284,7 @@ void displayAll(){
              r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
              r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
              r.sex, r.status) != EOF){
-                 displayRecord(r);	   	
+                displayRecord(r);	   	
             
 		 }
         
@@ -281,14 +332,14 @@ void searchRecord(){
              r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
              r.sex, r.status) != EOF){
         
-        if(searchType == 1 && strcmp(searchfCode, r.facilityCode) == 0){
-            displayRecord(r);
-            found = 1;
-        }
-        else if(searchType == 2 && searchID == r.pdl_ID){
-            displayRecord(r);
-            found = 1;
-        }
+		        if(searchType == 1 && strcmp(searchfCode, r.facilityCode) == 0){
+		            displayRecord(r);
+		            found = 1;
+		        }
+		        else if(searchType == 2 && searchID == r.pdl_ID){
+		            displayRecord(r);
+		            found = 1;
+		        }
     }
     
     if(!found){
@@ -305,7 +356,7 @@ void addRecord()
     
     do{
         r = getPdl();
-        
+        appendDocketNo(r.noCrimes, r.pdl_ID);
         fptr = fopen("pdlRecord.txt", "a");
         if(fptr == NULL){
             printf("File Failed to Open!\n");
@@ -319,7 +370,7 @@ void addRecord()
 	        r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year,
 	        r.sex, r.status);
                 
-            //appendDocketNo(r.noCrimes);
+            
         fclose(fptr);
         
         printf("\nAdd another record? (y/n): ");
@@ -333,19 +384,19 @@ void updateRecord(){
 	
 }
 void deleteRecord(){
+	/*Creates a temp .txt file copies everything except the record that matches the deleteID and renames the temp file to the original .txt file's name*/
 	pdl r;
     int deleteID = 0, recordFound = 0;
 
-    // Open original for reading, temp for writing
     fptr = fopen("pdlRecord.txt", "r");
     if (fptr == NULL) {
-        printf("Failed to read file. No records exist yet.\n");
+        printf("Failed to read file. No records exist yet!\n");
         return;
     }
 
     temp = fopen("tempRecord.txt", "w");
     if (temp == NULL) {
-        printf("Failed to create temporary file.\n");
+        printf("Failed to create temporary file!\n");
         fclose(fptr);
         return;
     }
@@ -353,10 +404,9 @@ void deleteRecord(){
     printf("Enter PDL ID to delete PDL record: ");
     scanf("%d", &deleteID);
     
-    // Clear the input buffer
-    while(getchar() != '\n');
-
-    // Read through the file using the exact same format string as displayAll()
+    
+    while(getchar() != '\n'); // Clear the input buffer
+	deleteDocket(deleteID);
     while(fscanf(fptr, "%[^;];%d;%d;%[^;];%[^;];%d;%[^;];%[^;];%d;%d;%[^;];%d;%d;%[^;];%[^\n]\n",
              r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
              r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
@@ -364,8 +414,9 @@ void deleteRecord(){
              r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
              r.sex, r.status) != EOF) {
         
-        // If ID matches, skip writing it to temp (effectively deleting it)
+        
         if (deleteID == r.pdl_ID) {
+        	// If "deleteID" matches with "r.pdl_ID" skip writing it to temp
             recordFound = 1;
             continue;
         }
@@ -377,7 +428,7 @@ void deleteRecord(){
 	        r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year,
 	        r.sex, r.status); 
     }
-
+	
     fclose(fptr);
     fclose(temp);
 
@@ -391,55 +442,3 @@ void deleteRecord(){
     }
 }
 
-
-/*
-	
-	*/
-	
-	/*	pdl r;
-	int deleteID = 0, recordFound  = 0;
-	//copies .txt file to another .txt file except for 
-	//record to be deleted then renames the temp.txt file to the original
-	fptr = fopen("pdlRecord.txt", "r");
-	temp = fopen("tempRecord.txt", "w");
-	printf("Enter PDL ID to delete PDL record: ");
-	scanf("%d", &deleteID);
-	if(fptr == NULL) printf("Failed to read file.");
-	else{
-		printf("\n=== ALL PDL RECORD ===\n");
-		while(fscanf(fptr, "%s %d %d %s %s %d %s %s %d %d %s %d %d %s %s",
-	                 r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
-	                 r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
-	                 r.date_rendered.Month, &r.date_rendered.day, &r.date_rendered.year,
-	                 r.dateOfBirth.Month, &r.dateOfBirth.day, &r.dateOfBirth.year,
-	                 r.sex, r.status) != EOF){
-	            	
-	            	//printf("ID to be deleted: %d, PDL_ID now:%d\n", deleteID, r.pdl_ID);
-	            	if(deleteID == r.pdl_ID){
-	            		recordFound = 1;
-	            		continue;
-					}	   
-						fprintf(temp, "%s %d %d %s %s %d %s %s %d %d %s %d %d %s %s", 
-	                r.facilityCode, r.pdl_ID, r.noCrimes, r.pdl_name, 
-	                r.pdl_address.city, r.pdl_address.zipCode, r.pdl_address.province,
-	                r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year,
-	                r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year,
-	                r.sex, r.status); 
-					
-	            
-			 }
-			 if(recordFound != 1){
-			 		fclose(fptr);
-			 		fclose(temp);
-			 		remove("tempRecord.txt");
-					printf("Record Could not be deleted (ID not found)!\n");
-			}
-			else{
-			fclose(fptr);
-			fclose(temp);
-			remove("pdlRecord.txt");
-			rename("tempRecord.txt", "pdlRecord.txt");
-			printf("Record deleted!\n");
-		}
-        
-	}*/
