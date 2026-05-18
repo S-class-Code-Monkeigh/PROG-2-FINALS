@@ -6,9 +6,9 @@ address getAddress(){
 	fgets(a.city, sizeof(a.city), stdin);
 	a.city[strcspn(a.city, "\n")] = '\0'; //removes\n (helps with formatting) by going to the index with "\n" and replacing it with \0
 	do{
-		printf("Enter zipcode (00000): ");
+		printf("Enter zipcode (0000): ");
 		scanf("%d", &a.zipCode);
-	}while(a.zipCode > 99999 || a.zipCode < 10000);
+	}while(a.zipCode > 9999 || a.zipCode < 1000);
 	fflush(stdin);
 	printf("Enter province: ");
 	fgets(a.province, sizeof(a.province), stdin);
@@ -426,7 +426,7 @@ void updateRecord()
 			
 			printf("\n=== ENTER NEW DATA ===\n");
 			pdl newRecord = getPdl();
-			
+			appendDocketNo(newRecord.noCrimes, newRecord.pdl_ID);
 			fprintf(temp, "%s;%d;%d;%s;%s;%d;%s;%s;%d;%d;%s;%d;%d;%s;%s\n", 
 					newRecord.facilityCode, newRecord.pdl_ID, newRecord.noCrimes, newRecord.pdl_name, 
 					newRecord.pdl_address.city, newRecord.pdl_address.zipCode, newRecord.pdl_address.province,
@@ -517,4 +517,12 @@ void deleteRecord(){
         printf("Record deleted successfully!\n");
     }
 }
-
+void clearInBuff()
+{
+	while(getchar()!='\n');
+}
+void inputError()
+{
+	printf("Input value incorrect. Please try again.\n");
+	clearInBuff();
+}

@@ -1,1 +1,2 @@
-r131;1;2;Isaiah Franco;Talisay;60000;Cebu;May;18;2026;February;6;2007;male;MARRIED
+r121;1;2;Isaiah Franco;Talisay;4500;Cebu;May;18;2026;February;6;2007;male;MARRIED
+r1231;13;3;John Criminal;Pardo;6000;Cebu;may;18;2026;may;1;2000;male;MARRIED
