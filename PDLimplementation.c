@@ -1,75 +1,111 @@
 #include "PDL.h"
 
+FILE *fptr;
+FILE *temp; //for record delete function
+FILE *docketptr;
+FILE *dtemp;//for docket delete function
+
 address getAddress(){
 	address a;
-	printf("Enter city: ");
+	printf("\tEnter CITY: ");
 	fgets(a.city, sizeof(a.city), stdin);
 	a.city[strcspn(a.city, "\n")] = '\0'; //removes\n (helps with formatting) by going to the index with "\n" and replacing it with \0
-	do{
-		printf("Enter zipcode (00000): ");
-		scanf("%d", &a.zipCode);
-	}while(a.zipCode > 99999 || a.zipCode < 10000);
-	fflush(stdin);
-	printf("Enter province: ");
+	
+	while(1)
+	{
+		printf("\tEnter ZIPCODE (0000): ");
+		if(scanf("%d", &a.zipCode)!=1 || a.zipCode > 9999 || a.zipCode < 1000)
+		{
+			inputError();
+			continue;
+		}
+		clearInBuff();
+		break;
+	}
+
+	printf("\tEnter PROVINCE: ");
 	fgets(a.province, sizeof(a.province), stdin);
 	a.province[strcspn(a.province, "\n")] = '\0';
 	return a;
-
 }
 date getDate(){
 	date d;
-	printf("Enter Valid Date:\n");
-	printf("Month: ");
+	printf("\tMONTH: ");
 	fgets(d.Month, sizeof(d.Month), stdin);
 	d.Month[strcspn(d.Month, "\n")] = '\0';
 	
-	printf("Day: ");
+	printf("\tDAY: ");
 	scanf("%d", &d.day);
-	printf("Year: ");
+	clearInBuff();
+	
+	printf("\tYEAR: ");
 	scanf("%d", &d.year);
+	clearInBuff();
+	
 	return d;
 }
 
 pdl getPdl(){
 	pdl p;
-	int i;
-	printf("Enter Facility Code: ");
+	int i; //wait asa ni gamiton actually WYAHAHA
+	printf("=== NEW RECORD ===\n\n");
+	printf("Enter FACILITY CODE: ");
 	fgets(p.facilityCode, sizeof(p.facilityCode), stdin);
 	p.facilityCode[strcspn(p.facilityCode, "\n")] = '\0';
 	
-	printf("Enter ID number: ");
-	scanf("%d", &p.pdl_ID);
-	fflush(stdin);
+	while(1)
+	{
+		printf("Enter ID number: ");
+		if(scanf("%d", &p.pdl_ID)!=1)
+		{
+			inputError();
+			continue;
+		}
+		clearInBuff();
+		break;
+	}
 	
-	printf("Number Crimes Committed: ");
-	scanf("%d", &p.noCrimes);
-	fflush(stdin);
+	while(1)
+	{
+		printf("Number of CRIMES COMMITTED: ");
+		if(scanf("%d", &p.noCrimes)!=1)
+		{
+			inputError();
+			continue;
+		}
+		clearInBuff();
+		break;
+	}
 	
-	printf("Enter PDL name: ");
+	printf("Enter PDL NAME: ");
 	fgets(p.pdl_name, sizeof(p.pdl_name), stdin);
 	p.pdl_name[strcspn(p.pdl_name, "\n")]='\0'; 
 	
-	printf("Enter Address before incarceration:\n");
+	printf("ADDRESS PRIOR TO INCARCERATION\n");
 	p.pdl_address = getAddress();
 	
-	do{
-		printf("Enter Date rendered:\n");
+	do
+	{
+		printf("DATE RENDERED\n");
 		p.date_rendered = getDate();
-	}while(isdateValid(p.date_rendered) != 1);
-	fflush(stdin);
+	}
+	while(isdateValid(p.date_rendered) != 1);
+	clearInBuff();
 	
-	do{
-		printf("Enter Date of Birth:\n");
+	do
+	{
+		printf("DATE OF BIRTH\n");
 		p.dateOfBirth = getDate();
-	}while(isdateValid(p.dateOfBirth) != 1);
-	fflush(stdin);
+	}
+	while(isdateValid(p.dateOfBirth) != 1);
+	clearInBuff();
 	
-	printf("Enter Sex: ");
+	printf("Enter SEX: ");
 	fgets(p.sex, sizeof(p.sex), stdin);
 	p.sex[strcspn(p.sex, "\n")] ='\0';
 	
 	do{
-		printf("Enter Marital Status: ");
+		printf("Enter MARITAL STATUS: ");
 		fgets(p.status, sizeof(p.status), stdin);
 		p.status[strcspn(p.status, "\n")] = '\0';
 		
@@ -118,10 +154,10 @@ void docketNoDisplay(int searchID){
     
     while (fscanf(docketptr, "%d %d", &id, &noCrimes) == 2) {
         if (id == searchID) {
-            printf("== DOCKET NUMBERS ==\n");
+            printf(" DOCKET NUMBERS\n");
             for (i = 0; i < noCrimes; i++) {
                 fscanf(docketptr, "%d", &docket);
-                printf("\t= Docket No. %d: %d\n", i + 1, docket);
+                printf("\tDocket No. %d: %d\n", i + 1, docket);
             }
             printf("\n");
             fclose(docketptr);
@@ -177,39 +213,49 @@ void menu(){
 	pdl r;
 	int choice;
 
-    do {
-    	
-        printf("=== PERSON DEPRIVED OF LIBERTY RECORDS SYSTEM ===\n");
-        printf("[1] - Add a Record\n");
-        printf("[2] - Search/Find a Record\n");
-        printf("[3] - Update/Edit a Record\n");
-        printf("[4] - Delete a Record\n");
-        printf("[5] - Display All Records\n");
-        printf("[6] - Exit\n");
-        printf("Enter your choice (1-6): ");
-        scanf("%d", &choice);
-        fflush(stdin);
+    do 
+	{
+    	printf("============================================================");
+        printf("\n\n          PERSON DEPRIVED OF LIBERTY RECORDS SYSTEM          \n\n");
+		printf("============================================================\n\n");
+        printf("\t[1] - Add a Record\n");
+        printf("\t[2] - Search/Find a Record\n");
+        printf("\t[3] - Update/Edit a Record\n");
+        printf("\t[4] - Delete a Record\n");
+        printf("\t[5] - Display All Records\n");
+        printf("\t[6] - Exit\n");
+        printf("\n\tEnter your choice (1-6): ");
         
-        system("cls");
-        switch(choice) {
+		scanf("%d", &choice);
+        
+		clearInBuff();
+        
+		
+        switch(choice) 
+		{
             case 1:
+				system("cls");
                 addRecord();
-                printf("Record added successfully!\n");
+                printf("Record added successfully!\n\n");
                 break;
                 
-            case 2: printf("Search for a record!\n");
+            case 2: 
+				system("cls");
+				printf("Search for a record!\n\n");
             	searchRecord();
                 break;
                 
-            case 3:printf("Update a record!\n");
+            case 3:
 				updateRecord();
+				printf("Updated a record!\n");
                 break;
                 
-            case 4:printf("Delete a record!\n");
+            case 4:
+				printf("Delete a record!\n");
             	deleteRecord();
                 break;
                 
-            case 5:printf("Dispaly all record!\n");
+            case 5:
                 displayAll(r);
                 break;
                 
@@ -218,7 +264,7 @@ void menu(){
                 exit(0);
                 
             default:
-                printf("Invalid choice! Please try again.\n");
+                printf("Invalid choice! Please try again.\n\n");
         }
         
     } while(choice != 6);
@@ -230,44 +276,136 @@ char* allCap(char c[]){
 	}
 	return c;
 }
+
 int isdateValid(date d){
-	if(d.day > 31) return 0;
-	if(d.day < 0) return 0;
-	if(strcmp(allCap(d.Month), "FEBRUARY") == 0){
-		if(d.year%4 == 0){
-			if(d.day > 29) return 0;
-		}
-		if(d.day > 28) return 0;
+	
+	if(d.day < 1 || d.day > 31)
+	{
+		printf("ERROR: DAY must be between 1 and 31\n");
+		return 0;
 	}
-	if(strcmp(allCap(d.Month), "APRIL") == 0) if(d.day > 30) return 0;
-	if(strcmp(allCap(d.Month), "JUNE") == 0) if(d.day > 30) return 0;
-	if(strcmp(allCap(d.Month), "SEPTEMBER") == 0)if(d.day > 30) return 0;
-	if(strcmp(allCap(d.Month), "NOVEMBER") == 0)if(d.day > 30) return 0;
+	
+	char monthUpper[20];
+	strcpy(monthUpper, d.Month);
+	allCap(monthUpper);
+	
+	int daysInMonth;
+	
+	if(strcmp(monthUpper, "JANUARY") == 0)
+	{
+		daysInMonth = 31;
+	}
+	else if(strcmp(monthUpper, "FEBRUARY") == 0)
+	{
+		int isLeapYear = 0;
+		if(d.year % 4 == 0)
+		{
+			if(d.year % 100 == 0)
+			{
+				if(d.year % 400 == 0)
+				{
+					isLeapYear = 1;
+				}
+				else
+				{
+					isLeapYear = 0;
+				}
+			}
+			else
+			{
+				isLeapYear = 1;  // Divisible by 4 but not 100 = leap year
+			}
+		}
+		
+		daysInMonth = isLeapYear ? 29 : 28;
+	}
+	else if(strcmp(monthUpper, "MARCH") == 0)
+	{
+		daysInMonth = 31;
+	}
+	else if(strcmp(monthUpper, "APRIL") == 0)
+	{
+		daysInMonth = 30;
+	}
+	else if(strcmp(monthUpper, "MAY") == 0)
+	{
+		daysInMonth = 31;
+	}
+	else if(strcmp(monthUpper, "JUNE") == 0)
+	{
+		daysInMonth = 30;
+	}
+	else if(strcmp(monthUpper, "JULY") == 0)
+	{
+		daysInMonth = 31;
+	}
+	else if(strcmp(monthUpper, "AUGUST") == 0)
+	{
+		daysInMonth = 31;
+	}
+	else if(strcmp(monthUpper, "SEPTEMBER") == 0)
+	{
+		daysInMonth = 30;
+	}
+	else if(strcmp(monthUpper, "OCTOBER") == 0)
+	{
+		daysInMonth = 31;
+	}
+	else if(strcmp(monthUpper, "NOVEMBER") == 0)
+	{
+		daysInMonth = 30;
+	}
+	else if(strcmp(monthUpper, "DECEMBER") == 0)
+	{
+		daysInMonth = 31;
+	}
+	else
+	{
+		printf("Invalid MONTH input. Please try again.\n");
+		return 0;
+	}
+	
+	if(d.day > daysInMonth)
+	{
+		printf("Invalid DAY input. Please try again.");
+		return 0;
+	}
 	
 	return 1;
 }
 
-int isStatusValid(char c[]){
-
-	if(strcmp(allCap(c), "MARRIED") == 0) return 1;
-	if(strcmp(allCap(c), "SINGLE") == 0) return 1;
-	if(strcmp(allCap(c), "DIVORCED")== 0) return 1;
-	if(strcmp(allCap(c), "SEPERATED")== 0) return 1;
-	if(strcmp(allCap(c), "WIDOWED")== 0) return 1;
+int isStatusValid(char c[])
+{
+	char *validStatus[] = {"MARRIED", "SINGLE", "DIVORCED", "SEPARATED", "WIDOWED"};
+	int numStatus = 5;
 	
-	else return 0;
+	char statusUpper[10];
+	strcpy(statusUpper, c);
+	allCap(statusUpper);
+	
+	for(int i = 0; i < numStatus; i++)
+	{
+		if(strcmp(statusUpper, validStatus[i]) == 0)
+		{
+			return 1;
+		}
+	}
+	
+	printf("Invalid STATUS input. Please try again.\n");
+	return 0;
 }
+
 void displayRecord(pdl r){
-    printf("\n=== PDL RECORD ===\n");
-    printf("Facility Code: %s\n", r.facilityCode);
-    printf("PDL ID: %d\n", r.pdl_ID);
-    printf("Name: %s\n", r.pdl_name);
-    printf("Address: %s, %s %d\n", r.pdl_address.city, r.pdl_address.province, r.pdl_address.zipCode);
-    printf("Date Rendered: %s %d, %d\n", r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year);
-    printf("Date of Birth: %s %d, %d\n", r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year);
-    printf("Sex: %s\n", r.sex);
-    printf("Marital Status: %s\n", r.status);
-    printf("Crimes: %d\n", r.noCrimes);
+    printf("\n=== PDL RECORD ===\n\n");
+    printf(" Facility Code: %s\n", r.facilityCode);
+    printf(" PDL ID: %d\n", r.pdl_ID);
+    printf(" Name: %s\n", r.pdl_name);
+    printf(" Address: %s, %s %d\n", r.pdl_address.city, r.pdl_address.province, r.pdl_address.zipCode);
+    printf(" Date Rendered: %s %d, %d\n", r.date_rendered.Month, r.date_rendered.day, r.date_rendered.year);
+    printf(" Date of Birth: %s %d, %d\n", r.dateOfBirth.Month, r.dateOfBirth.day, r.dateOfBirth.year);
+    printf(" Sex: %s\n", r.sex);
+    printf(" Marital Status: %s\n", r.status);
+    printf(" Crimes: %d\n", r.noCrimes);
     docketNoDisplay(r.pdl_ID);
     printf("\n");
 }
@@ -278,7 +416,7 @@ void displayAll(){
 	fptr = fopen("pdlRecord.txt", "r");
 	if(fptr == NULL) printf("Failed to read file.");
 	else{
-		printf("\n=== ALL PDL RECORD ===\n");
+		printf("\n=== ALL PDL RECORDS ===\n");
 		while(fscanf(fptr, "%[^;];%d;%d;%[^;];%[^;];%d;%[^;];%[^;];%d;%d;%[^;];%d;%d;%[^;];%[^\n]\n",
              r.facilityCode, &r.pdl_ID, &r.noCrimes, r.pdl_name, 
              r.pdl_address.city, &r.pdl_address.zipCode, r.pdl_address.province,
@@ -298,13 +436,22 @@ void searchRecord(){
     char searchfCode[15];
     int searchID, choice, searchType, found = 0;
     
-    printf("Enter [1] PDL facility code or [2] ID: ");
-    scanf("%d", &choice);
-    while(getchar() != '\n');
+    printf("Enter [1] PDL FACILITY CODE or [2] ID: ");
+    while(1)
+	{
+		if(scanf("%d", &choice)!=1 || (choice !=1 && choice !=2))
+		{
+			inputError();
+			continue;
+		}
+		clearInBuff();
+		break;
+	}
     
-    switch(choice){
+    switch(choice)
+	{
         case 1: 
-            printf("Enter facility code: ");
+            printf("Enter FACILITY CODE: ");
             fgets(searchfCode, sizeof(searchfCode), stdin);
             searchfCode[strcspn(searchfCode, "\n")] = 0;
             searchType = 1;
@@ -315,9 +462,6 @@ void searchRecord(){
             searchType = 2;
             while(getchar() != '\n');
             break;
-        default:
-            printf("Invalid choice!\n");
-            return;
     }
 
     fptr = fopen("pdlRecord.txt", "r");
@@ -343,19 +487,21 @@ void searchRecord(){
 		        }
     }
     
-    if(!found){
-        printf("RECORD NOT FOUND\n");
+    if(!found)
+	{
+		system("cls");
+        printf("RECORD NOT FOUND.\n\n");
     }
     fclose(fptr);
 }
 
 void addRecord()
 {
-
 	pdl r;
     char choice;
     
-    do{
+    do
+	{
         r = getPdl();
         appendDocketNo(r.noCrimes, r.pdl_ID);
         fptr = fopen("pdlRecord.txt", "a");
@@ -380,6 +526,8 @@ void addRecord()
         
     }while(toupper(choice) == 'Y');
 	
+	system("cls");
+	
 }
 void updateRecord()
 {
@@ -387,7 +535,7 @@ void updateRecord()
 	
 	int updateID, found = 0;
 	
-	printf("Enter PDL ID of ENTRY you wish to UPDATE:\n> ");
+	printf("Enter PDL ID of ENTRY you wish to UPDATE: ");
 	
 	while(1)
 	{
@@ -421,10 +569,10 @@ void updateRecord()
 		{
 			found = 1;
 			
-			printf("\n=== CURRENT RECORD ===\n");
+			printf("\n=== RECORD SELECTED ===\n");
 			displayRecord(r);
 			
-			printf("\n=== ENTER NEW DATA ===\n");
+			printf("\nENTERING NEW DATA\n\n");
 			pdl newRecord = getPdl();
 			
 			fprintf(temp, "%s;%d;%d;%s;%s;%d;%s;%s;%d;%d;%s;%d;%d;%s;%s\n", 
@@ -444,29 +592,29 @@ void updateRecord()
 					r.sex, r.status);
 		}
 	}
-		fclose(fptr);
-		fclose(temp);
-		
-		if(found)
-		{
-			remove("pdlRecord.txt");
-			rename("tempRecord.txt", "pdlRecord.txt");
-			printf("Record updated successfully!\n");
-		}
-		else
-		{
-			remove("tempRecord.txt");
-			printf("Record not found!\n");
-		}
+	fclose(fptr);
+	fclose(temp);
+	
+	if(found)
+	{
+		remove("pdlRecord.txt");
+		rename("tempRecord.txt", "pdlRecord.txt");
+		printf("Record updated successfully!\n");
+	}
+	else
+	{
+		remove("tempRecord.txt");
+		printf("Record not found!\n");
+	}
 }
 void deleteRecord(){
+	/*Creates a temp .txt file copies everything except the record that matches the deleteID and renames the temp file to the original .txt file's name*/
 	pdl r;
     int deleteID = 0, recordFound = 0;
 
-    // Open original for reading, temp for writing
     fptr = fopen("pdlRecord.txt", "r");
     if (fptr == NULL) {
-        printf("Failed to read file. No records exist yet.\n");
+        printf("Failed to read file. No records exist yet!\n");
         return;
     }
 
@@ -518,3 +666,13 @@ void deleteRecord(){
     }
 }
 
+void inputError()
+{
+	printf("Input value incorrect. Please try again.\n");
+	clearInBuff();
+}
+
+void clearInBuff()
+{
+	while(getchar()!='\n');
+}

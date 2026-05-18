@@ -1,4 +1,3 @@
-/*note function data types not final, di pa kaayo ko maayos sa file processing*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,13 +5,8 @@
 
 #define dMax 15
 
-#ifndef PDL_h
-#define PDL_h
-
-FILE *fptr;
-FILE *temp; //for record delete function
-FILE *docketptr;
-FILE *dtemp;//for docket delete function
+#ifndef PDL2_H
+#define PDL2_H
 
 typedef struct{
 	char city[30];
@@ -61,9 +55,9 @@ void addRecord(); //adds a new record to the text file
 void searchRecord();//searches record based off facility code or ID number
 void updateRecord();//returns new information for a pdl record
 void deleteRecord();/*deletes a record by copies .txt file to another .txt file except for 
-	record to be deleted then renames the temp.txt file to the original*/
+record to be deleted then renames the temp.txt file to the original*/
 
-void inputError(); //for input error message and clearing buffer
-void clearInBuff(); //while getchar loop for clearing buffer (ako lng ni gibutang for now but i guess ma gamit rman fflush(stdin) pd)
+void clearInBuff();
+void inputError();
 
 #endif
